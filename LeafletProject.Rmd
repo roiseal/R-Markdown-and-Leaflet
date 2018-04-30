@@ -1,0 +1,53 @@
+##R Markdown and Leaflet
+
+#####roiseal
+#####April 29 2018
+
+#### Project Submission Description
+
+Create a web page using R Markdown that features a map created with Leaflet.
+
+Host your webpage on either GitHub Pages, RPubs, or NeoCities.
+
+Your webpage must contain the date that you created the document, and it must contain a map created with Leaflet. We would love to see you show off your creativity!
+
+#### Project Objective
+
+Show NJ (USA) Student body counts per major race categories, summarized by County
+Ranking done by largest total count of Students.
+
+
+```{R,echo = FALSE ,warning = FALSE}
+##-- Load Library, set environment, populate date
+
+library(leaflet)
+
+setwd("~/Documents/Leaflet")
+leafloadfile <- read.table("School Data with LL.csv", header = TRUE, sep=";")
+njcountydataset <- data.frame(leafloadfile)
+
+##-- Concatenate Content for popup information (summary numbers for NJ County Student  statistics
+
+leafpopup<-paste("County -", njcountydataset$County,
+"County_Seat -",njcountydataset$County_Seat,
+"White Students -",njcountydataset$White,
+"Black Students -",njcountydataset$Black,
+"Hispanic Students -",njcountydataset$Hispanic,
+sep = " ")
+ 
+leaflables <- paste(njcountydataset$County,"-", njcountydataset$Total)
+##-- Map it 
+
+njcountydataset  %>%
+  leaflet()  %>%
+  addTiles() %>%
+  addMarkers(lng=njcountydataset$longitude, lat=njcountydataset$latitude,  popup = leafpopup) %>%
+  addCircles(lng=njcountydataset$longitude, lat=njcountydataset$latitude, weight = 1, radius = sqrt(njcountydataset$Total) * 50)  %>%
+  addLegend( title = "NJ Counties Total Students" ,  colors = njcountydataset$Total /200000, labels=leaflables)
+     
+```
+
+####References (Data source)
+Data for the project was compiled based on multiple google lookups
+and
+DOE Data for 2017-2018 Enrollment District Reported Data
